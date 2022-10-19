@@ -1,0 +1,34 @@
+---
+title: "Power Demo"
+author: "Ross McCullough"
+date: "19/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+group_sizes <- 60:140
+test_powers <-51:95 /100
+
+size_power_grid <- expand.grid(group_sizes, test_powers)
+
+active_df<-
+  tibble(size_power_grid)%>%
+  rename(size=Var1, power=Var2)%>%
+  rowwise()%>%
+  mutate(active_rate = power.prop.test(n=size, p1=0.25, power=power)$p2[1])
+
+```
+
+```{r}
+ggplot(data = active_df, aes(x=size, y=power, z=active_rate)) +
+  geom_contour_filled()
+```
+
